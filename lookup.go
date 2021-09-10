@@ -121,20 +121,16 @@ func getValueByName(v reflect.Value, key string, caseInsensitive bool) (reflect.
 		return reflect.Value{}, ErrKeyNotFound
 	}
 
-	if index != -1 {
-		if value.Kind() == reflect.Ptr {
-			value = value.Elem()
-		}
+	if value.Kind() == reflect.Ptr || value.Kind() == reflect.Interface {
+		value = value.Elem()
+	}
 
+	if index != -1 {
 		if value.Type().Kind() != reflect.Slice {
 			return reflect.Value{}, ErrInvalidIndexUsage
 		}
 
 		value = value.Index(index)
-	}
-
-	if value.Kind() == reflect.Ptr || value.Kind() == reflect.Interface {
-		value = value.Elem()
 	}
 
 	return value, nil
